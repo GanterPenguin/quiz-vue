@@ -2,7 +2,7 @@
     "name": "quiz-vue",
     "version": "1.0.0",
     "description": "Frontend for client quiz api",
-    "main": "dist/quiz-vue.js",
+    "main": "dest/quiz-vue.js",
     "repository": "http://gitea.websm.io/Buldakov/quiz-vue.git",
     "author": "BuldakovIvan <iv081198@yandex.ru>",
     "license": "MIT",
