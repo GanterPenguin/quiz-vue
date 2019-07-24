@@ -10,7 +10,7 @@ module.exports = {
     mode,
     devtool: 'inline-source-map',
     entry: './src/index.js',
-    watch: true,
+    //watch: true,
     watchOptions: {
         ignored: "/node_modules/",
     },
