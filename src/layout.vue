@@ -28,9 +28,11 @@ export default {
 
 <template lang="pug">
 
-.quiz-app 
+.quiz-app
 
-    router-view
+    .quiz-app Working
+
+    //router-view
 
 </template>
 
