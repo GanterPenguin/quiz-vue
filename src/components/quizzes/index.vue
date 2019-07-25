@@ -11,11 +11,16 @@ export default {
     },
     methods: {
         ...mapActions('quizzes', [
+            'initQuizzes',
         ]),
     },
     computed: {
-        ...mapState({
+        ...mapState('quizzes',{
+            quizzes: state => state.quizzes,
         }),
+    },
+    created() {
+        this.initQuizzes();
     },
 }
 </script>
@@ -23,6 +28,12 @@ export default {
 
 <template lang="pug">
 
-.quizzes
+.quizzes(v-if="quizzes")
+
+    .quizzes__title Опросы
+
+    .quizzes__quiz(v-for="quiz in quizzes" v-bind:key="quiz.id")
+
+        router-link(:to="{ path: 'quiz/' + quiz.id }").quizzes__quiz-title {{ quiz.title }}
 
 </template>

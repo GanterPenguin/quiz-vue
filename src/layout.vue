@@ -15,6 +15,7 @@ export default {
     },
     computed: {
         ...mapState({
+            apiData: state => state.apiData,
         }),
     },
     watch: {
@@ -28,11 +29,9 @@ export default {
 
 <template lang="pug">
 
-.quiz-app
+.quiz-app(v-if="apiData")
 
-    .quiz-app Working
-
-    //router-view
+    router-view
 
 </template>
 

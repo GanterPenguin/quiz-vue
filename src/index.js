@@ -12,13 +12,11 @@ import store from './store';
 import Quizzes from './components/quizzes';
 import Quiz from './components/quiz';
 
-
 export default class QuizApp {
 
     constructor(selector) {
 
         const el = document.querySelector(selector);
-
         const routes = [
             { path: '/', component: Quizzes },
             { path: '/quiz/:id', component: Quiz },
@@ -30,13 +28,15 @@ export default class QuizApp {
 
         let vm = new Vue({
             store,
-            //router,
+            router,
             data: {
                 params: el.dataset,
             },
             methods: {
+                ...mapActions(['init']),
             },
             created() {
+                this.init(this.params);
             },
             el,
             render: h => h(Layout),

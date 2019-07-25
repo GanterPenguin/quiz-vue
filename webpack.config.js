@@ -34,7 +34,7 @@ module.exports = {
                             {
                                 "targets": {
                                     "esmodules": true
-                                }    
+                                }
                             }
                         ] 
                     ],
@@ -78,5 +78,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './dest'),
         filename: 'quiz-vue.js',
+        library: "quiz-vue",
+        libraryTarget: "umd",
+        umdNamedDefine: true,
     },
 };
