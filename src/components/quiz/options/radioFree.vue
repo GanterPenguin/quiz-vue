@@ -11,11 +11,23 @@ export default {
     },
     data: function () {
         return {
+            value: '',
+            freeValue: '',
         }
     },
+    computed: {},
     methods: {
+        setValue(value) {
+            let questionId = this.questionId;
+            this.$emit('set-value', {value, questionId});
+        },
     },
-    computed: {
+    watch: {
+        value(newVal, oldVal) {
+            if(newVal) {
+                this.setValue(newVal);
+            }
+        }
     },
 }
 </script>
@@ -23,11 +35,28 @@ export default {
 
 <template lang="pug">
 
-form.quiz-question__options
+.quiz-question__options
 
-    label(v-for="(option, index) in options" :for="'radioFree' + index + questionId") {{ option }}
-        input(name="'radioFree' + questionId" type="radio" :id="'radioFree' + index + questionId" :value="option")
+    .quiz-question-option(v-for="(option, index) in options" )
+        input.quiz-question-option__input(
+            name="'radioFree' + questionId" 
+            type="radio" 
+            :id="'radioFree' + index + questionId" 
+            :value="option" 
+            v-model="value")
+        label.quiz-question-option__label.quiz-question-option__label_radio(
+            :for="'radioFree' + index + questionId")
+        .quiz-question-option__text {{ option }}
 
-    label Ваш вариант ответа
-        input(type="text")
+    .quiz-question-option.quiz-question-option_free
+        .quiz-question-option__text Ваш вариант ответа
+        input.quiz-question-option__input(
+            name="'radioFree' + questionId" 
+            type="radio" 
+            :id="'radioFree' + 'free' + questionId" 
+            :value="freeValue" 
+            v-model="value")
+        label.quiz-question-option__label.quiz-question-option__label_radio(
+            :for="'radioFree' + 'free' + questionId")
+        input(type="text" v-model="freeValue")
 </template>

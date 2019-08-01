@@ -30,10 +30,10 @@ export default {
 
 .quizzes(v-if="quizzes")
 
-    .quizzes__title Опросы
+    h2.quizzes__title Опросы
 
-    .quizzes__quiz(v-for="quiz in quizzes" v-bind:key="quiz.id")
+    .quizzes__wrapper
 
-        router-link(:to="{ path: 'quiz/' + quiz.id }").quizzes__quiz-title {{ quiz.title }}
+        router-link.quizzes__quiz(v-for="quiz in quizzes" :to="{ path: 'quiz/' + quiz.id }" v-bind:key="quiz.id") {{ quiz.title }}
 
 </template>

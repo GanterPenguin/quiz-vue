@@ -1,39 +1,45 @@
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
-import Radio from './options/radio';
-import Checkbox from './options/checkbox';
-import RadioFree from './options/radioFree';
-import CheckboxFree from './options/checkboxFree';
+import TextQuestion from './questions/textQuestion';
+//import Radio from './options/radio';
+//import Checkbox from './options/checkbox';
+//import RadioFree from './options/radioFree';
+//import CheckboxFree from './options/checkboxFree';
 
 export default {
 
     components: {
-        'radio-component': Radio,
-        'checkbox-component': Checkbox,
-        'radio-free': RadioFree,
-        'checkbox-free': CheckboxFree,
+        'text-question': TextQuestion,
     },
     data: function () {
         return {
+            answers: [],
         }
     },
     methods: {
         ...mapActions('quiz', [
             'initQuiz',
+            'send'
         ]),
-        optionsType(type) {
+        questionType(type) {
             switch(type) {
-                case 'radio':
-                    return 'radio-component';
-                case 'checkbox':
-                    return 'checkbox-component';
-                case 'radioFree':
-                    return 'radio-free';
-                case 'checkboxFree':
-                    return 'checkbox-free';
+                case 'text':
+                    return 'text-question';
                 default:
-                    return 'radio';
+                    return 'text-question';
             };
+        },
+        setValue(value) {
+            if(this.answers.length > 0) {
+                let index = this.answers.findIndex(answer => answer.questionId === value.questionId);
+                if(index !== -1) {
+                    this.answers[index].value = value.value;
+                } else {
+                    this.answers.push(value);
+                }
+            } else {
+                this.answers.push(value);
+            }
         },
     },
     computed: {
@@ -42,6 +48,9 @@ export default {
         }),
         id() {
             return this.$route.params.id;
+        },
+        isQuizCompleted() {
+            return this.questions.length === this.answers.length ? true : false;
         },
     },
     created() {
@@ -55,14 +64,14 @@ export default {
 
 .quiz
 
-    .quiz__title 
+    .quiz__title
+
+    .quiz__wrapper
 
         .quiz__questions(v-if="questions")
 
-            .quiz-question(v-for="question in questions")
+            component(v-for="question in questions" :key="question.id" :is="questionType(question._embedded.content.type)" :question="question" v-on:set-value="setValue")
 
-                .quiz-question__text {{ question._embedded.content.text }}
-
-                    component(:is="optionsType(question._embedded.response.type)" :questionId="question.id" :options="question._embedded.response.options")
+    input(type="submit" value="Отправить" @click="send({id, answers})").quiz__submit
 
 </template>
