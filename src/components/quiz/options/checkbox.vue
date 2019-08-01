@@ -36,7 +36,7 @@ export default {
 
 .quiz-question__options
 
-    .quiz-question-option(v-for="(option, index) in options" )
+    .quiz-question-option(v-for="(option, index) in options")
         input.quiz-question-option__input(
             name="'checkbox' + questionId" 
             type="checkbox" :id="'checkbox' + index + questionId" 

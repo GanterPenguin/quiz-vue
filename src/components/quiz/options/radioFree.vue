@@ -55,6 +55,7 @@ export default {
             type="radio" 
             :id="'radioFree' + 'free' + questionId" 
             :value="freeValue" 
+            :disabled="!freeValue"
             v-model="value")
         label.quiz-question-option__label.quiz-question-option__label_radio(
             :for="'radioFree' + 'free' + questionId")

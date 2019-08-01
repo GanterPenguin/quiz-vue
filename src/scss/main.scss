@@ -100,16 +100,16 @@
     margin-bottom: 10px;
 
     &:last-child {
-    
+
         margin-bottom: 0;
-    
+
     }
 
     &_free {
-    
+
         flex-direction: row-reverse;
         align-self: flex-start;
-    
+
     }
 
     &__label {

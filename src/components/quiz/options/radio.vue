@@ -24,6 +24,7 @@ export default {
     watch: {
         value(newVal, oldVal) {
             if(newVal) {
+                console.log(newVal);
                 this.setValue(newVal);
             }
         }

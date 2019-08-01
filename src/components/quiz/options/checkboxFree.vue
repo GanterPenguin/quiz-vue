@@ -25,9 +25,10 @@ export default {
     watch: {
         value(newVal, oldVal) {
             if(newVal) {
+                console.log(newVal);
                 this.setValue(newVal);
             }
-        }
+        },
     },
 }
 </script>
@@ -55,7 +56,8 @@ export default {
             name="'checkboxFree' + questionId" 
             type="checkbox" 
             :id="'checkboxFree' + 'free' + questionId" 
-            :value="freeValue" 
+            :value="freeValue"
+            :disabled="!freeValue"
             v-model="value")
         label.quiz-question-option__label(
             :for="'checkboxFree' + 'free' + questionId")
