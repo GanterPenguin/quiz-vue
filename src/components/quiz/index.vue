@@ -92,7 +92,7 @@ export default {
 
     router-link.quiz__back(:to="{ path: '/' }") Вернуться к опросам
 
-    h2.quiz__title Статистика: {{ quiz.title }}
+    h2.quiz__title {{ quiz.title }}
 
     .quiz__wrapper
 
