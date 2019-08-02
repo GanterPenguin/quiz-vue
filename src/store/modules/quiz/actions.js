@@ -1,9 +1,32 @@
 "use strict";
 
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    let result = ""
+    ca.forEach(item => {
+        while (item.charAt(0) == ' ') {
+            item = item.substring(1);
+        }
+        if (item.indexOf(name) == 0) {
+            result = item.substring(name.length, item.length);
+        }
+    });
+    return result;
+}
+
+function setCookie(cname, cvalue, exdays) {
+    let d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
 export default {
 
     async initQuiz(context, params) {
-        let link = `${context.rootState.apiData.quizzes.href}/${params.id}/questions`;
+        let link = `${context.rootState.apiData.quizzes.href}/${params.id}/questions?limit=1000`;
         let response = await fetch(link);
         if(!response.ok) {
             throw new Error("Connection error");
@@ -93,14 +116,24 @@ export default {
                 let index = statistics.findIndex(item => item.questionId === params.answers[i].questionId);
                 let statObject = statistics[index];
                 let answer = params.answers[i];
-                let object = await context.dispatch("formDefaultStatistic", { hasStatistics, index, statObject, answer});
+                let object = {};
+                switch(params.answers[i].questionType) {
+                    default:
+                        object = await context.dispatch("formDefaultStatistic", { hasStatistics, index, statObject, answer});
+                        break;
+                }
                 statistics[index] = object;
                 statisticsObjects = statistics;
             }
         } else {
             for(let i = 0; i < params.answers.length; i++) {
                 let answer = params.answers[i];
-                let object = await context.dispatch("formDefaultStatistic", { hasStatistics, answer});
+                let object = {};
+                switch(params.answers[i].questionType) {
+                    default:
+                        object = await context.dispatch("formDefaultStatistic", { hasStatistics, index, statObject, answer});
+                        break;
+                }
                 statisticsObjects.push(object);
             }
         }
@@ -120,6 +153,15 @@ export default {
 
         if(result.ok) {
             sf.alert([{text: "Сохранено", type: "ok"}]);
+            let cookie = getCookie("completedQuizzes");
+            if(cookie) {
+                let value = JSON.parse(cookie);
+                value.push(params.id);
+                setCookie("completedQuizzes", JSON.stringify(value), 200);
+            } else {
+                let value = [params.id];
+                setCookie("completedQuizzes", JSON.stringify(value), 200);
+            }
         } else {
             sf.alert([{ text: "Ошибка, повторите попытку позже.", type: 'err' }]);
         };

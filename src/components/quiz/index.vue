@@ -17,6 +17,21 @@ export default {
             'initQuiz',
             'send'
         ]),
+        getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            let result = ""
+            ca.forEach(item => {
+                while (item.charAt(0) == ' ') {
+                    item = item.substring(1);
+                }
+                if (item.indexOf(name) == 0) {
+                    result = item.substring(name.length, item.length);
+                }
+            });
+            return result;
+        },
         questionType(type) {
             switch(type) {
                 case 'text':
@@ -37,6 +52,14 @@ export default {
                 this.answers.push(value);
             }
         },
+        sendQuiz(data) {
+            if(this.isQuizCompleted) {
+                this.send(data);
+                this.$router.push({path: `/statistics/${this.id}`});
+            } else {
+                sf.alert([{ text: "Пожалуйста ответье на все вопросы.", type: 'err' }]);
+            }
+        },
     },
     computed: {
         ...mapState('quiz', {
@@ -51,7 +74,14 @@ export default {
         },
     },
     created() {
-        this.initQuiz({ id: this.id });
+        let cookie = this.getCookie("completedQuizzes");
+        if(cookie) {
+            let value = JSON.parse(cookie);
+            let index = value.find(item => item === this.id);
+            this.$router.push({path: `/statistics/${this.id}`});
+        } else {
+            this.initQuiz({ id: this.id });
+        }
     },
 }
 </script>
@@ -62,7 +92,7 @@ export default {
 
     router-link.quiz__back(:to="{ path: '/' }") Вернуться к опросам
 
-    h2.quiz__title {{ quiz.title }}
+    h2.quiz__title Статистика: {{ quiz.title }}
 
     .quiz__wrapper
 
@@ -70,6 +100,6 @@ export default {
 
             component(v-for="question in questions" :key="question.id" :is="questionType(question._embedded.content.type)" :question="question" v-on:set-value="setValue")
 
-        input(type="submit" value="Отправить" @click="send({id, answers})").quiz__submit
+        input(type="submit" value="Отправить" @click="sendQuiz({id, answers})").quiz__submit
 
 </template>

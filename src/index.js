@@ -11,6 +11,7 @@ import store from './store';
 
 import Quizzes from './components/quizzes';
 import Quiz from './components/quiz';
+import Statistics from "./components/statistics";
 
 export default class QuizApp {
 
@@ -20,6 +21,7 @@ export default class QuizApp {
         const routes = [
             { path: '/', component: Quizzes },
             { path: '/quiz/:id', component: Quiz },
+            { path: '/statistics/:id', component: Statistics },
         ];
 
         const router = new VueRouter({ routes });
