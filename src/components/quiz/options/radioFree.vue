@@ -12,7 +12,7 @@ export default {
     data: function () {
         return {
             value: '',
-            freeValue: '',
+            freeValue: undefined,
         }
     },
     computed: {},

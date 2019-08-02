@@ -39,12 +39,12 @@ export default {
 
     .quiz-question-option(v-for="(option, index) in options" )
         input.quiz-question-option__input(
-            name="'radio' + questionId" 
+            :name="'radio' + questionId" 
             type="radio" 
-            :id="'radio' + index" 
+            :id="'radio' + index + questionId" 
             :value="option" 
             v-model="value")
-        label.quiz-question-option__label.quiz-question-option__label_radio(:for="'radio' + index")
+        label.quiz-question-option__label.quiz-question-option__label_radio(:for="'radio' + index + questionId")
         .quiz-question-option__text {{ option }}
 
 </template>

@@ -8,22 +8,49 @@ export default {
         if(!response.ok) {
             throw new Error("Connection error");
         }
+        let questionsData = await response.json();
 
-        let data = await response.json();
-        context.commit("initQuiz", data);
+        let quizLink = `${context.rootState.apiData.quizzes.href}/${params.id}/`;
+        let quizResponse = await fetch(quizLink);
+        if(!response.ok) {
+            throw new Error("Connection error");
+        }
+        let quizData = await quizResponse.json();
+
+        context.commit("initQuiz", { questionsData, quizData});
     }, 
     formDefaultStatistic(context, params) {
         if(params.hasStatistics) {
 
             if(params.index !== -1) {
-                params.answer.value.forEach(option => {
-                    let optionIndex = params.statObject.options.findIndex(statOption => statOption.text === option.text);
+
+                let isValueArray = Array.isArray(params.answer.value);
+                if(isValueArray) {
+                    params.answer.value.forEach(option => {
+                        let optionIndex = params.statObject.options.findIndex(statOption => statOption.text === option);
+                        if(optionIndex !== -1) {
+                            params.statObject.options[optionIndex].count++;
+                        } else {
+                            let object = {
+                                text: option,
+                                count: 1,
+                            };
+                            params.statObject.options.push(object);
+                        }
+                    });
+                } else {
+                    let optionIndex = params.statObject.options.findIndex(statOption => statOption.text === params.answer.value);
                     if(optionIndex !== -1) {
                         params.statObject.options[optionIndex].count++;
                     } else {
-                        params.statObject.options.push(option);
+                        let object = {
+                            text: params.answer.value,
+                            count: 1,
+                        };
+                        params.statObject.options.push(object);
                     }
-                });
+                }
+                return params.statObject;
             }
 
         } else {
@@ -56,10 +83,13 @@ export default {
         };
         response = await response.json();
 
-        let hasStatistics = response._embedded.hasOwnProperty('statistics');
+        let hasStatistics = false;
+        if(response._embedded) {
+            hasStatistics = response._embedded.hasOwnProperty('statistics');
+        }
         if(hasStatistics) {
             let statistics = response._embedded.statistics;
-            for(let i = 0; i <= params.answers.length; i++) {
+            for(let i = 0; i < params.answers.length; i++) {
                 let index = statistics.findIndex(item => item.questionId === params.answers[i].questionId);
                 let statObject = statistics[index];
                 let answer = params.answers[i];
@@ -68,7 +98,7 @@ export default {
                 statisticsObjects = statistics;
             }
         } else {
-            for(let i = 0; i <= params.answers.length; i++) {
+            for(let i = 0; i < params.answers.length; i++) {
                 let answer = params.answers[i];
                 let object = await context.dispatch("formDefaultStatistic", { hasStatistics, answer});
                 statisticsObjects.push(object);
@@ -83,18 +113,16 @@ export default {
         patch.push(body);
         console.log(patch);
 
-        // let result = await fetch(link, {
-        //     method: "PATCH",
-        //     body: JSON.stringify(patch),
-        // });
+        let result = await fetch(link, {
+            method: "PATCH",
+            body: JSON.stringify(patch),
+        });
 
-        // result = await result.json();
-
-        // if(result.ok) {
-        //     sf.alert([{text: "Сохранено", type: "ok"}]);
-        // } else {
-        //     sf.alert([{ text: "Ошибка, повторите попытку позже.", type: 'err' }]);
-        // };
+        if(result.ok) {
+            sf.alert([{text: "Сохранено", type: "ok"}]);
+        } else {
+            sf.alert([{ text: "Ошибка, повторите попытку позже.", type: 'err' }]);
+        };
     },
 
 };

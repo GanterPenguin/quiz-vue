@@ -1,10 +1,6 @@
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
 import TextQuestion from './questions/textQuestion';
-//import Radio from './options/radio';
-//import Checkbox from './options/checkbox';
-//import RadioFree from './options/radioFree';
-//import CheckboxFree from './options/checkboxFree';
 
 export default {
 
@@ -45,6 +41,7 @@ export default {
     computed: {
         ...mapState('quiz', {
             questions: state => state.questions,
+            quiz: state => state.quiz,
         }),
         id() {
             return this.$route.params.id;
@@ -59,12 +56,13 @@ export default {
 }
 </script>
 
-
 <template lang="pug">
 
-.quiz
+.quiz(v-if="quiz")
 
-    .quiz__title
+    router-link.quiz__back(:to="{ path: '/' }") Вернуться к опросам
+
+    h2.quiz__title {{ quiz.title }}
 
     .quiz__wrapper
 
@@ -72,6 +70,6 @@ export default {
 
             component(v-for="question in questions" :key="question.id" :is="questionType(question._embedded.content.type)" :question="question" v-on:set-value="setValue")
 
-    input(type="submit" value="Отправить" @click="send({id, answers})").quiz__submit
+        input(type="submit" value="Отправить" @click="send({id, answers})").quiz__submit
 
 </template>
