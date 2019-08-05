@@ -41,61 +41,19 @@ export default {
         let quizData = await quizResponse.json();
 
         context.commit("initQuiz", { questionsData, quizData});
-    }, 
-    formDefaultStatistic(context, params) {
-        if(params.hasStatistics) {
-
-            if(params.index !== -1) {
-
-                let isValueArray = Array.isArray(params.answer.value);
-                if(isValueArray) {
-                    params.answer.value.forEach(option => {
-                        let optionIndex = params.statObject.options.findIndex(statOption => statOption.text === option);
-                        if(optionIndex !== -1) {
-                            params.statObject.options[optionIndex].count++;
-                        } else {
-                            let object = {
-                                text: option,
-                                count: 1,
-                            };
-                            params.statObject.options.push(object);
-                        }
-                    });
-                } else {
-                    let optionIndex = params.statObject.options.findIndex(statOption => statOption.text === params.answer.value);
-                    if(optionIndex !== -1) {
-                        params.statObject.options[optionIndex].count++;
-                    } else {
-                        let object = {
-                            text: params.answer.value,
-                            count: 1,
-                        };
-                        params.statObject.options.push(object);
-                    }
-                }
-                return params.statObject;
-            }
-
-        } else {
-
-            let object = {};
-            object.questionId = params.answer.questionId;
-            object.type = params.answer.questionType;
-            object.options = [];
-
-            let isValueArray = Array.isArray(params.answer.value);
-            if(isValueArray) {
-                params.answer.value.forEach(item => {
-                    object.options.push({text: item , count: 1});
-                });
-            } else {
-                let value = params.answer.value;
-                object.options = [{text: value, count: 1}];
-            }
-
-            return object;
-        }
     },
+
+    async initStatistics(context, params) {
+        let link = `${context.rootState.apiData.quizzes.href}/${params.id}/response`;
+        let response = await fetch(link);
+        if(!response.ok) {
+            throw new Error("Connection error");
+        }
+        let statisticsData = await response.json();
+
+        context.commit("initStatistics", statisticsData);
+    },
+
     async send(context, params) {
         let patch = [];
         let statisticsObjects = [];
@@ -165,6 +123,61 @@ export default {
         } else {
             sf.alert([{ text: "Ошибка, повторите попытку позже.", type: 'err' }]);
         };
+    },
+
+    formDefaultStatistic(context, params) {
+        if(params.hasStatistics) {
+
+            if(params.index !== -1) {
+
+                let isValueArray = Array.isArray(params.answer.value);
+                if(isValueArray) {
+                    params.answer.value.forEach(option => {
+                        let optionIndex = params.statObject.options.findIndex(statOption => statOption.text === option);
+                        if(optionIndex !== -1) {
+                            params.statObject.options[optionIndex].count++;
+                        } else {
+                            let object = {
+                                text: option,
+                                count: 1,
+                            };
+                            params.statObject.options.push(object);
+                        }
+                    });
+                } else {
+                    let optionIndex = params.statObject.options.findIndex(statOption => statOption.text === params.answer.value);
+                    if(optionIndex !== -1) {
+                        params.statObject.options[optionIndex].count++;
+                    } else {
+                        let object = {
+                            text: params.answer.value,
+                            count: 1,
+                        };
+                        params.statObject.options.push(object);
+                    }
+                }
+                return params.statObject;
+            }
+
+        } else {
+
+            let object = {};
+            object.questionId = params.answer.questionId;
+            object.type = params.answer.questionType;
+            object.options = [];
+
+            let isValueArray = Array.isArray(params.answer.value);
+            if(isValueArray) {
+                params.answer.value.forEach(item => {
+                    object.options.push({text: item , count: 1});
+                });
+            } else {
+                let value = params.answer.value;
+                object.options = [{text: value, count: 1}];
+            }
+
+            return object;
+        }
     },
 
 };

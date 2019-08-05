@@ -78,9 +78,11 @@ export default {
         if(cookie) {
             let value = JSON.parse(cookie);
             let index = value.find(item => item === this.id);
-            this.$router.push({path: `/statistics/${this.id}`});
-        } else {
-            this.initQuiz({ id: this.id });
+            if(index) {
+                this.$router.push({path: `/statistics/${this.id}`});
+            } else {
+                this.initQuiz({ id: this.id });
+            }
         }
     },
 }
