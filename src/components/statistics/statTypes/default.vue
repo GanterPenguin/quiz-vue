@@ -46,6 +46,6 @@ export default {
             .quiz-statistics__option-text {{ option.text }}
 
             .quiz-statistics__progress-bar
-                q-linear-progress(style="height: 20px" :value="progress(option.count)")
-                .quiz-statistics__count {{ option.count }}
+                q-linear-progress(style="height: 20px" :value="progress(option.count)").quiz-statistics__progress-line
+                .quiz-statistics__progress-count {{ option.count }}
 </template>

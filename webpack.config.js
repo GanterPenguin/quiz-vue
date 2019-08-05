@@ -2,6 +2,7 @@
 
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const mode = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
 console.log(`Running ${mode} mode`);
@@ -75,6 +76,9 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin()
     ],
+    optimization: {
+        minimizer: [new TerserPlugin()],
+    },
     output: {
         path: path.resolve(__dirname, './dest'),
         filename: 'quiz-vue.js',

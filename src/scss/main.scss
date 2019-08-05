@@ -242,7 +242,13 @@
 
     }
 
-    &__count {
+    &__progress-line {
+    
+        flex-shrink: 0;
+    
+    }
+
+    &__progress-count {
 
         margin-left: 10px;
 
